@@ -1,0 +1,14 @@
+[Unit]
+Description=Uvicorn instance to serve hype words
+After=network.target
+[Service]
+User=root
+Group=www-data
+LimitNOFILE=4096
+WorkingDirectory=/home/pi/NoToadBot
+Environment="PATH=/home/pi/NoToadBot/venv/bin"
+ExecStart=python main.py
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target
