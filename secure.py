@@ -6,10 +6,8 @@ from telegram.update import Update
 
 logger = logging.getLogger(__name__)
 
-accepted_chats = {
-    -596626366, # test chat
-    410684289, # i3cheese 
-}
+with open("accepted_chats.txt", 'r') as f:
+    accepted_chats = [int(s.split('#')[0].strip()) for s in f]
 
 
 def secure_callback(func: Callable[[Update, CallbackContext], None]) -> Callable[[Update, CallbackContext], None]:
