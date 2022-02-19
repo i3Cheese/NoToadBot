@@ -37,8 +37,11 @@ def write_subscribed_chats(subscribed_chats: Iterable[int]):
 
 
 def get_subscribed_chats() -> list[int]:
-    with open(subscriptors_file, 'r', encoding='utf-8') as f:
-        subscribed_chats = [int(s.strip()) for s in f]
+    try:
+        with open(subscriptors_file, 'r', encoding='utf-8') as f:
+            subscribed_chats = [int(s.strip()) for s in f]
+    except FileNotFoundError:
+        subscribed_chats = []
     return subscribed_chats
 
 
@@ -48,7 +51,6 @@ def subscribe_callback(update: Update, context: CallbackContext):
     assert(chat is not None)
     chat_id = chat.id
     assert(update.effective_message is not None)
-    __import__('pprint').pprint(context.job_queue.get_jobs_by_name('send_notification'))
 
     if subscribe(chat_id):
         logger.info("%d was subscribed", chat_id)
