@@ -92,7 +92,7 @@ def load_day_events(day: Optional[datetime.date] = None) -> list[Event]:
         day = datetime.datetime.now(USE_TZ).date()
     weekday = day.weekday()
     if weekday == 6:
-        raise SundayError
+        return []
     lessons = iter(load_timetable()[weekday])
     events = load_shedule()
     res_events: list[Event] = []
