@@ -1,0 +1,120 @@
+- shortname: vsits
+  name: Всемирная История
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/71575939734?pwd=AMP0N8XJ73mVy4qqlCfCeLUuU9XyD-.1"
+  
+- shortname: fiz
+  name: Физика
+  links: 
+    - name: Викочка
+      url: "https://us02web.zoom.us/j/88440929571"
+
+- shortname: angl
+  name: Английский
+  links: 
+    - name: Часовских
+      url: "https://us02web.zoom.us/j/6624775411?pwd=NGgrbVVtQ2VkYzNOdDAyYjA5aGNzdz09"
+
+- shortname: matprak
+  name: Мат. прак
+  links: 
+    - name: Зумик
+      url: "https://us02web.zoom.us/j/2217944129?pwd=Nm9CM1NDbExyNEFIbFJKclJ0anptZz09"
+    - name: Дисик
+      url: Сами знаете
+
+- shortname: alglekt
+  name: Лекция алгебры
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/8158280397?pwd=YWI1TC92ekJ4MzdGNmJVazNud0VQZz09"
+
+- shortname: inf
+  name: Информатика
+  links: 
+    - name: Зумик
+      url: "https://us02web.zoom.us/j/6716185674?pwd=eUdTcmNkNitpRGxNZG5CZUpUOTUyZz09"
+
+- shortname: geomlekt
+  name: Лекция геомы
+  links: 
+    - name: Зумик
+      url: "https://us02web.zoom.us/j/2217944129?pwd=Nm9CM1NDbExyNEFIbFJKclJ0anptZz09"
+
+- shortname: obsh
+  name: Общество
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/79937038899?pwd=rinu6yn9POWmc8Jw1LUzKJ2NxnG3Ol.1"
+
+- shortname: him
+  name: Химия
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/3279133085?pwd=enFTQit1Uk1TeTZISFdpY0Q5NkZBQT09"
+
+- shortname: anallekt
+  name: Лекция анализа
+  links: 
+    - name: Зумик
+      url: "https://us02web.zoom.us/j/9713786582?pwd=ckhTMTVCTEQ0RDJnL3ZUVWRFblNtZz09"
+
+- shortname: lit
+  name: Литература 
+  links: 
+    - name: Зумик
+      url: "https://cornell.zoom.us/j/6642254610?pwd=a0QyOVExL3A5bm5ZZkJWRFFZTy9uQT09"
+
+- shortname: rus
+  name: Русский 
+  links: 
+    - name: Зумик
+      url: "https://cornell.zoom.us/j/6642254610?pwd=a0QyOVExL3A5bm5ZZkJWRFFZTy9uQT09"
+
+- shortname: bio
+  name: Биология 
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/73717393501?pwd=P31rTOUI2rPU9a7Rku1acojbV1LzBx.1"
+
+- shortname: alg
+  name: Алгебра 
+  links: 
+    - name: Дисик
+      url: Сами знаете
+
+- shortname: anal
+  name: Мат. Анализ 
+  links: 
+    - name: Зумик
+      url: "https://zoom.us/j/4320998514?pwd=bjlqaTVtSHZheG1ad3ZiRHY5N1pWQT09"
+
+- shortname: rusist
+  name: История России 
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/9335313391?pwd=Qmh6TEg4L055eThub2xxMy9BWjlTUT09"
+
+- shortname: geom
+  name: Геометрия 
+  links: 
+    - name: Дисик
+      url: Сами знаете
+
+- shortname: ml
+  name: Машинлернинг 
+  links: 
+    - name: Дисик
+      url: Сами знаете
+
+- shortname: obz
+  name: ОБЖ 
+  links: 
+    - name: Зумик
+      url: "https://us04web.zoom.us/j/78229026144?pwd=WVE2aUo0SkVObjlrLzJjQ2pUREp5Zz09"
+
+- shortname: fk
+  name: Физкультура 
+  links: []
+
