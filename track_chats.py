@@ -8,6 +8,8 @@ from telegram.ext import (
     CallbackContext,
 )
 
+from secure import secure_callback
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +48,6 @@ def extract_status_change(
 
     return was_member, is_member
 
-
 def track_chats(update: Update, context: CallbackContext) -> None:
     """Tracks the chats the bot is in."""
     result = extract_status_change(update.my_chat_member)
@@ -64,6 +65,8 @@ def track_chats(update: Update, context: CallbackContext) -> None:
     if chat is None:
         return
 
+    if not was_member and is_member:
+        logger.info("%d new chat", chat.id)
     if chat.type == Chat.PRIVATE:
         if not was_member and is_member:
             logger.info("%s started the bot", cause_name)
@@ -87,6 +90,7 @@ def track_chats(update: Update, context: CallbackContext) -> None:
             context.bot_data.setdefault("channel_ids", set()).discard(chat.id)
 
 
+@secure_callback
 def show_chats(update: Update, context: CallbackContext) -> None:
     """Shows which chats the bot is in"""
     user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
@@ -105,15 +109,13 @@ def show_chats(update: Update, context: CallbackContext) -> None:
 def greet_chat_members(update: Update, context: CallbackContext) -> None:
     """Greets new users in chats and announces when someone leaves"""
     result = extract_status_change(update.chat_member)
-    if result is None:
-        return
+    assert(result is not None)
 
     was_member, is_member = result
     cause_name = update.chat_member.from_user.mention_html()
     member_name = update.chat_member.new_chat_member.user.mention_html()
 
-    if update.effective_chat is None:
-        return
+    assert(update.effective_chat is not None)
 
     if not was_member and is_member:
         update.effective_chat.send_message(

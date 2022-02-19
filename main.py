@@ -20,6 +20,7 @@ from telegram.ext import CallbackContext, ChatMemberHandler, CommandHandler, Upd
 import telegram.ext
 
 from agenda import now_events_message
+from secure import secure_callback
 import track_chats
 
 # Enable logging
@@ -30,6 +31,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@secure_callback
 def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
     text = now_events_message()
     if update.effective_message is None:
@@ -37,6 +39,7 @@ def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
     update.effective_message.reply_text(text, parse_mode='MarkdownV2')
 
 
+@secure_callback
 def links_with_time(update: telegram.Update, context: telegram.ext.CallbackContext):
     if update.effective_message is None:
         return
@@ -60,6 +63,7 @@ def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater("5148912290:AAGEP6DbSx53l095t9geTHM5kxyjGhHyTxM")
+    updater.job_queue
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -86,9 +90,6 @@ def main() -> None:
     # To reset this, simply pass `allowed_updates=[]`
     updater.start_polling(allowed_updates=Update.ALL_TYPES)
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
