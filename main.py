@@ -12,14 +12,15 @@ bot.
 
 import logging
 from typing import Optional, Tuple
-import dateutil.parser
 
+import dateutil.parser
 from telegram import Chat, ChatMember, ChatMemberUpdated, ParseMode, Update
 import telegram
 from telegram.ext import CallbackContext, ChatMemberHandler, CommandHandler, Updater
 import telegram.ext
 
 from agenda import now_events_message
+from notifications import first_init, subscribe_callback, unsubscribe_callback
 from secure import secure_callback
 import track_chats
 
@@ -63,7 +64,6 @@ def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater("5148912290:AAGEP6DbSx53l095t9geTHM5kxyjGhHyTxM")
-    updater.job_queue
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -84,6 +84,17 @@ def main() -> None:
     ))
     dispatcher.add_handler(CommandHandler(
         "link_asap", links_with_time))
+
+    dispatcher.add_handler(CommandHandler(
+        "subscribe",
+        subscribe_callback,
+    ))
+    dispatcher.add_handler(CommandHandler(
+        "unsubscribe",
+        unsubscribe_callback,
+    ))
+
+    first_init(updater.job_queue)  # initialize shedule
 
     # Start the Bot
     # We pass 'allowed_updates' handle *all* updates including `chat_member` updates
