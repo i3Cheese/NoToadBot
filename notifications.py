@@ -33,7 +33,7 @@ def unsubscribe(chat_id: int):
 
 def write_subscribed_chats(subscribed_chats: Iterable[int]):
     with open(subscriptors_file, 'w', encoding='utf-8') as f:
-        f.writelines(map(str, subscribed_chats))
+        f.writelines(map(lambda s: str(s) + '\n', subscribed_chats))
 
 
 def get_subscribed_chats() -> list[int]:
