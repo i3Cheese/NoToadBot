@@ -22,6 +22,7 @@ import telegram.ext
 from agenda import now_events_message
 from notifications import first_init, subscribe_callback, unsubscribe_callback
 from secure import secure_callback
+from telegram_markdown import escape
 import track_chats
 
 # Enable logging
@@ -39,7 +40,7 @@ def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
     text = now_events_message()
     assert(update.effective_message is not None)
     if (update.effective_message.text == update.effective_message.text.upper()):
-        text = "НЕ ОРИ ПЖ!!!\n\n" + text
+        text = escape("НЕ ОРИ ПЖ!!!\n\n") + text
     update.effective_message.reply_text(text, parse_mode='MarkdownV2')
 
 
