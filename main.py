@@ -39,7 +39,7 @@ def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
     text = now_events_message()
     assert(update.effective_message is not None)
     if (update.effective_message.text == update.effective_message.text.upper()):
-        text = "НЕ ОРИ ПЖ!!!\n\n" + t
+        text = "НЕ ОРИ ПЖ!!!\n\n" + text
     update.effective_message.reply_text(text, parse_mode='MarkdownV2')
 
 

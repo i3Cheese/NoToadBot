@@ -88,6 +88,16 @@ def send_notification(context: CallbackContext):
         except Exception as e:
             logger.exception(e)
 
+def transform_time_for_today(t: datetime.time):
+    today = datetime.datetime.now(USE_TZ)
+    return today.replace(
+        hour=t.hour,
+        minute=t.minute,
+        second=t.second,
+        microsecond=t.microsecond,
+    )
+
+    
 
 def shedule_for_today(job_queue: JobQueue):
     events = load_day_events()
@@ -102,7 +112,7 @@ def shedule_for_today(job_queue: JobQueue):
     for event in events:
         job_queue.run_once(
             send_notification,
-            event.start_time.replace(tzinfo=USE_TZ),
+            transform_time_for_today(event.start_time),
             context=event,
         )
 
