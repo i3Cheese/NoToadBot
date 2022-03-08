@@ -49,7 +49,8 @@ def links_with_time(update: telegram.Update, context: telegram.ext.CallbackConte
     if update.effective_message is None:
         return
     if not context.args:
-        update.effective_message.reply_text("Пожалуйста укажите дату и время")
+        link_asap(update, context)
+        # update.effective_message.reply_text("Пожалуйста укажите дату и время")
         return
 
     dt = context.args[0]
