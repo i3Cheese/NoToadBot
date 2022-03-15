@@ -16,13 +16,14 @@ from typing import Optional, Tuple
 import dateutil.parser
 from telegram import Chat, ChatMember, ChatMemberUpdated, ParseMode, Update
 import telegram
+from telegram.constants import PARSEMODE_HTML
 from telegram.ext import CallbackContext, ChatMemberHandler, CommandHandler, Updater
 import telegram.ext
 
-from agenda import now_events_message
+from agenda import agenda_message, now_events_message
 from notifications import first_init, subscribe_callback, unsubscribe_callback
 from secure import secure_callback
-from telegram_markdown import escape
+from utils import escape
 import track_chats
 
 # Enable logging
@@ -34,6 +35,12 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+parse_mode = PARSEMODE_HTML
+
+def reply_text(update: telegram.Update, text: str):
+    assert(update.effective_message is not None)
+    update.effective_message.reply_text(text, parse_mode=parse_mode, disable_web_page_preview=True)
+
 
 @secure_callback
 def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
@@ -42,7 +49,33 @@ def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
     if (update.effective_message.text == update.effective_message.text.upper()):
         text = escape("НЕ ОРИ ПЖ!!!\n\n") + text
     logger.info(repr(text))
-    update.effective_message.reply_text(text, parse_mode='MarkdownV2')
+    reply_text(update, text)
+
+
+@secure_callback
+def agenda_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
+    text = agenda_message()
+    assert(update.effective_message is not None)
+
+    if update.effective_message is None:
+        return
+    if not context.args:
+        text = agenda_message()
+    else:
+        dt = context.args[0]
+        logger.info(dt)
+        try:
+            dt = dateutil.parser.parse(dt)
+        except dateutil.parser.ParserError:
+            reply_text(update, "Неправильный аргумент")
+            return
+
+        text = now_events_message(dt)
+
+    if (update.effective_message.text == update.effective_message.text.upper()):
+        text = escape("НЕ ОРИ ПЖ!!!\n") + text
+    logger.info(repr(text))
+    reply_text(update, text)
 
 
 @secure_callback
@@ -51,7 +84,7 @@ def links_with_time(update: telegram.Update, context: telegram.ext.CallbackConte
         return
     if not context.args:
         link_asap(update, context)
-        # update.effective_message.reply_text("Пожалуйста укажите дату и время")
+        # reply_text(update, "Пожалуйста укажите дату и время")
         return
 
     dt = context.args[0]
@@ -59,11 +92,11 @@ def links_with_time(update: telegram.Update, context: telegram.ext.CallbackConte
     try:
         dt = dateutil.parser.parse(dt)
     except dateutil.parser.ParserError:
-        update.effective_message.reply_text("Неправильный аргумент")
+        reply_text(update, "Неправильный аргумент")
         return
 
     text = now_events_message(dt)
-    update.effective_message.reply_text(text, parse_mode='MarkdownV2')
+    reply_text(update, text)
 
 
 def main() -> None:
@@ -90,6 +123,15 @@ def main() -> None:
     ))
     dispatcher.add_handler(CommandHandler(
         "link_asap", links_with_time))
+
+    dispatcher.add_handler(telegram.ext.MessageHandler(
+        telegram.ext.Filters.regex(r'(?i)РАССПИСАНИЕ СРОЧНО'),
+        agenda_asap,
+    ))
+    dispatcher.add_handler(CommandHandler(
+        "agenda_asap", agenda_asap,
+    ))
+
 
     dispatcher.add_handler(CommandHandler(
         "subscribe",

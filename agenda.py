@@ -1,11 +1,11 @@
 import datetime
-from typing import Any, Optional
+from typing import Any, Iterable, Optional, Union
 import yaml
 import pydantic
 import csv
 
 from settings import USE_TZ
-from telegram_markdown import bold, escape
+from utils import bold, escape, transform_time_for_today
 
 
 class Link(pydantic.BaseModel):
@@ -13,7 +13,11 @@ class Link(pydantic.BaseModel):
     url: str
 
     def __str__(self):
-        return escape(f"{self.name}: {self.url}")
+        name = escape(self.name)
+        if self.url:
+            return f'<a href="{self.url}">{name}</a>'
+        else:
+            return name
 
 
 class Lesson(pydantic.BaseModel):
@@ -33,9 +37,12 @@ class Event(pydantic.BaseModel):
     start_time: datetime.time
     end_time: datetime.time
 
+    @property
+    def time_str(self):
+        return escape(f'{self.start_time:%H:%M}-{self.end_time:%H:%M}')
+
     def __str__(self):
-        time_str = escape(f'{self.start_time:%H:%M}-{self.end_time:%H:%M}')
-        s = f"{bold(self.name)} {time_str}\n"
+        s = f"{bold(self.name)} {self.time_str}\n"
         return s
 
 
@@ -44,8 +51,8 @@ class LessonEvent(Event):
     lesson: Lesson
 
     def __str__(self):
-        s = super().__str__()
-        s += str(self.lesson)
+        s = f'{self.name} {bold(self.lesson.name)} {self.time_str}\n'
+        s += ''.join(str(link) + '\n' for link in self.lesson.links)
         return s
 
 
@@ -108,8 +115,20 @@ def load_day_events(day: Optional[datetime.date] = None) -> list[Event]:
     return res_events
 
 
-def format_event_list(events: list[Event]) -> str:
+def join_evs(events: Iterable[Any]) -> str:
     return escape("================\n").join(map(str, events))
+
+
+def get_timedelta_to_time(t: datetime.time, dt: datetime.datetime) -> datetime.timedelta:
+    return transform_time_for_today(t, dt) - dt
+
+
+def timedelta_to_str(td: datetime.timedelta) -> str:
+    # d = {"days": td.days}
+    # d["hours"], rem = divmod(td.seconds, 3600)
+    d = {}
+    d["minutes"], d["seconds"] = divmod(td.seconds, 60)
+    return "{minutes} мин {seconds} с".format(**d)
 
 
 def now_events_message(dt: Optional[datetime.datetime] = None) -> str:
@@ -128,13 +147,21 @@ def now_events_message(dt: Optional[datetime.datetime] = None) -> str:
             break
     s = ""
     if now_events:
-        s = escape("Сейчас идёт:\n________________\n")
-        s += format_event_list(now_events)
-    if next_event:
-        if s:
-            s += "\n\n\n"
-        s += escape("Далее:\n________________\n")
-        s += str(next_event)
+        s += join_evs(
+            f"{e}До конца: {timedelta_to_str(get_timedelta_to_time(e.end_time, dt))}" for e in now_events
+        )
+    elif next_event:
+        s += f"{next_event}До начала: {timedelta_to_str(get_timedelta_to_time(next_event.end_time, dt))}"
+        # if s:
+        #     s += "\n\n\n"
+        # s += escape("Далее:\n\n")
+        # s += str(next_event)
     if not s:
-        s = escape("Сейчас ничего нет, отдыхаем!!!")
+        s = escape("Сегодня больше ничего не будет, отдыхаем!!!")
     return s
+
+def agenda_message(dt: Optional[datetime.datetime] = None) -> str:
+    if dt is None:
+        dt = datetime.datetime.now(USE_TZ)
+    events = load_day_events(dt.date())
+    return join_evs(events)

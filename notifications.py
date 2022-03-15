@@ -9,6 +9,7 @@ from telegram.update import Update
 from agenda import Event, load_day_events
 from secure import secure_callback
 from settings import USE_TZ
+from utils import transform_time_for_today
 
 logger = logging.getLogger(__name__)
 
@@ -88,16 +89,6 @@ def send_notification(context: CallbackContext):
         except Exception as e:
             logger.exception(e)
 
-def transform_time_for_today(t: datetime.time):
-    today = datetime.datetime.now(USE_TZ)
-    return today.replace(
-        hour=t.hour,
-        minute=t.minute,
-        second=t.second,
-        microsecond=t.microsecond,
-    )
-
-    
 
 def shedule_for_today(job_queue: JobQueue):
     events = load_day_events()
