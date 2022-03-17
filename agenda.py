@@ -151,7 +151,7 @@ def now_events_message(dt: Optional[datetime.datetime] = None) -> str:
             f"{e}До конца: {timedelta_to_str(get_timedelta_to_time(e.end_time, dt))}" for e in now_events
         )
     elif next_event:
-        s += f"{next_event}До начала: {timedelta_to_str(get_timedelta_to_time(next_event.end_time, dt))}"
+        s += f"{next_event}До начала: {timedelta_to_str(get_timedelta_to_time(next_event.start_time, dt))}"
         # if s:
         #     s += "\n\n\n"
         # s += escape("Далее:\n\n")
