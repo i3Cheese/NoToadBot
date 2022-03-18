@@ -4,6 +4,8 @@
 from typing import Optional
 
 from html import escape as escape_html
+from telegram.constants import PARSEMODE_HTML
+import telegram
 import datetime
 
 from settings import USE_TZ
@@ -21,6 +23,14 @@ def transform_time_for_today(t: datetime.time, dt: Optional[datetime.datetime] =
         second=t.second,
         microsecond=t.microsecond,
     )
+
+
+parse_mode = PARSEMODE_HTML
+
+def reply_text(update: telegram.Update, text: str):
+    assert(update.effective_message is not None)
+    update.effective_message.reply_text(text, parse_mode=parse_mode, disable_web_page_preview=True)
+
 
     
 reserve_characters = [

@@ -9,7 +9,7 @@ from telegram.update import Update
 from agenda import Event, load_day_events
 from secure import secure_callback
 from settings import USE_TZ
-from utils import transform_time_for_today
+from utils import reply_text, transform_time_for_today
 
 logger = logging.getLogger(__name__)
 
@@ -55,11 +55,11 @@ def subscribe_callback(update: Update, context: CallbackContext):
 
     if subscribe(chat_id):
         logger.info("%d was subscribed", chat_id)
-        update.effective_message.reply_text(
+        reply_text(update,
             "Вы успешно подписались на рассылку"
         )
     else:
-        update.effective_message.reply_text(
+        reply_text(update,
             "Вы и так подписаны"
         )
 
@@ -70,8 +70,7 @@ def unsubscribe_callback(update: Update, context: CallbackContext):
     chat_id = chat.id
     unsubscribe(chat_id)
     logger.info("%d was unsubscribed", chat_id)
-    assert(update.effective_message is not None)
-    update.effective_message.reply_text(
+    reply_text(update, 
         "Вы успешно отписались от рассылки"
     )
 

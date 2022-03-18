@@ -11,35 +11,27 @@ bot.
 """
 
 import logging
-from typing import Optional, Tuple
 
 import dateutil.parser
-from telegram import Chat, ChatMember, ChatMemberUpdated, ParseMode, Update
+from telegram import Update
 import telegram
-from telegram.constants import PARSEMODE_HTML
-from telegram.ext import CallbackContext, ChatMemberHandler, CommandHandler, Updater
+from telegram.ext import ChatMemberHandler, CommandHandler, Updater
 import telegram.ext
 
 from agenda import agenda_message, now_events_message
 from notifications import first_init, subscribe_callback, unsubscribe_callback
 from secure import secure_callback
-from utils import escape
 import track_chats
+from utils import escape, reply_text
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", 
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
     filename='NoToadBot.log',
 )
 
 logger = logging.getLogger(__name__)
-
-parse_mode = PARSEMODE_HTML
-
-def reply_text(update: telegram.Update, text: str):
-    assert(update.effective_message is not None)
-    update.effective_message.reply_text(text, parse_mode=parse_mode, disable_web_page_preview=True)
 
 
 @secure_callback
@@ -129,9 +121,8 @@ def main() -> None:
         agenda_asap,
     ))
     dispatcher.add_handler(CommandHandler(
-        "agenda_asap", agenda_asap,
+        ["agenda_asap", "todat"], agenda_asap,
     ))
-
 
     dispatcher.add_handler(CommandHandler(
         "subscribe",
