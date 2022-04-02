@@ -134,7 +134,7 @@ def main() -> None:
         agenda_asap,
     ))
     dispatcher.add_handler(telegram.ext.MessageHandler(
-        telegram.ext.Filters.regex(r'(?i)спасибо ботик'),
+        telegram.ext.Filters.regex(r'(?i)спасибо (бот(ик)?|жаба|жабка)'),
         thank_you_botik,
     ))
     dispatcher.add_handler(CommandHandler(
