@@ -11,6 +11,7 @@ bot.
 """
 
 import logging
+import random
 
 import dateutil.parser
 from telegram import Update
@@ -90,6 +91,18 @@ def links_with_time(update: telegram.Update, context: telegram.ext.CallbackConte
     text = now_events_message(dt)
     reply_text(update, text)
 
+def thank_you_botik(update: telegram.Update, context: telegram.ext.CallbackContext):
+    if update.effective_message is None:
+        return
+
+    messages = [
+        "Мяу ^_^",
+        "Квак",
+        "Фыр фыр",
+    ]
+    text = random.choice(messages)
+
+    reply_text(update, text)
 
 def main() -> None:
     """Start the bot."""
@@ -119,6 +132,10 @@ def main() -> None:
     dispatcher.add_handler(telegram.ext.MessageHandler(
         telegram.ext.Filters.regex(r'(?i)РАССПИСАНИЕ СРОЧНО'),
         agenda_asap,
+    ))
+    dispatcher.add_handler(telegram.ext.MessageHandler(
+        telegram.ext.Filters.regex(r'(?i)спасибо ботик'),
+        thank_you_botik,
     ))
     dispatcher.add_handler(CommandHandler(
         ["agenda_asap", "todat"], agenda_asap,
