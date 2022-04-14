@@ -164,4 +164,6 @@ def agenda_message(dt: Optional[datetime.datetime] = None) -> str:
     if dt is None:
         dt = datetime.datetime.now(USE_TZ)
     events = load_day_events(dt.date())
+    if not events:
+        return bold("Пусто :)")
     return join_evs(events)
