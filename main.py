@@ -1,15 +1,3 @@
-#!/usr/bin/env python
-# pylint: disable=C0116,W0613
-# This program is dedicated to the public domain under the CC0 license.
-
-"""
-Simple Bot to handle '(my_)chat_member' updates.
-Greets new users & keeps track of which chats the bot is in.
-Usage:
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
-
 import logging
 import random
 
@@ -23,7 +11,7 @@ from agenda import agenda_message, now_events_message
 from notifications import first_init, subscribe_callback, unsubscribe_callback
 from secure import secure_callback
 import track_chats
-from utils import escape, reply_text
+from utils import escape, reply_text, parse_date_time
 
 # Enable logging
 logging.basicConfig(
@@ -47,23 +35,20 @@ def link_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
 
 @secure_callback
 def agenda_asap(update: telegram.Update, context: telegram.ext.CallbackContext):
-    text = agenda_message()
     assert(update.effective_message is not None)
 
-    if update.effective_message is None:
-        return
     if not context.args:
         text = agenda_message()
     else:
         dt = context.args[0]
         logger.info(dt)
         try:
-            dt = dateutil.parser.parse(dt)
-        except dateutil.parser.ParserError:
+            dt = parse_date_time(dt)
+        except ValueError:
             reply_text(update, "Неправильный аргумент")
             return
 
-        text = now_events_message(dt)
+        text = agenda_message(dt)
 
     if (update.effective_message.text == update.effective_message.text.upper()):
         text = escape("НЕ ОРИ ПЖ!!!\n") + text
@@ -83,8 +68,8 @@ def links_with_time(update: telegram.Update, context: telegram.ext.CallbackConte
     dt = context.args[0]
     logger.info(dt)
     try:
-        dt = dateutil.parser.parse(dt)
-    except dateutil.parser.ParserError:
+        dt = parse_date_time(dt)
+    except ValueError:
         reply_text(update, "Неправильный аргумент")
         return
 
