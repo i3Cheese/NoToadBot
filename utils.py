@@ -5,6 +5,7 @@ from typing import Optional
 
 from html import escape as escape_html
 from telegram.constants import PARSEMODE_HTML
+import telegram.ext
 import telegram
 import datetime
 
@@ -31,6 +32,8 @@ def reply_text(update: telegram.Update, text: str):
     assert(update.effective_message is not None)
     update.effective_message.reply_text(text, parse_mode=parse_mode, disable_web_page_preview=True)
 
+def send_text(context: telegram.ext.CallbackContext, chat_id: (int | str), text: str):
+    context.bot.send_message(chat_id, text, parse_mode=parse_mode, disable_web_page_preview=True)
 
     
 reserve_characters = [

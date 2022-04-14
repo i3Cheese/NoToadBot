@@ -1,7 +1,6 @@
 import datetime
 import logging
-from typing import Iterable
-from telegram.constants import PARSEMODE_MARKDOWN_V2
+from typing import Iterable, Any
 from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.jobqueue import JobQueue
 from telegram.update import Update
@@ -9,7 +8,7 @@ from telegram.update import Update
 from agenda import Event, load_day_events
 from secure import secure_callback
 from settings import USE_TZ
-from utils import reply_text, transform_time_for_today
+from utils import reply_text, transform_time_for_today, send_text
 
 logger = logging.getLogger(__name__)
 
@@ -78,13 +77,13 @@ def unsubscribe_callback(update: Update, context: CallbackContext):
 def send_notification(context: CallbackContext):
     job = context.job
     assert(job is not None)
-    event: Event = job.context
+    _event: Any = job.context
+    event: Event = _event
     text = str(event)
     logging.info("SEND NOTIFICATION %s", event.name)
     for chat_id in get_subscribed_chats():
         try:
-            context.bot.send_message(
-                chat_id, text, parse_mode=PARSEMODE_MARKDOWN_V2)
+            send_text(context, chat_id, text)
         except Exception as e:
             logger.exception(e)
 
